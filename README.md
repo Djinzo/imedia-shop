@@ -2,6 +2,7 @@
 for this example we are using Buildpacks to create owr docker image,
 Spring Boot includes both Maven and Gradle support for buildpacks, 
 so we can directly run the flowing command in the project directory
+make sure that you have docker already installed
 ```
 gradle bootBuildImage
 ```
