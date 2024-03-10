@@ -18,13 +18,13 @@ data class ProductEntity(
         val sku: String,
 
         @Column(name = "name", nullable = false)
-        val name: String,
+        var name: String,
 
         @Column(name = "description")
-        val description: String? = null,
+        var description: String? = null,
 
         @Column(name = "price", nullable = false)
-        val price: BigDecimal,
+        var price: BigDecimal,
 
         @UpdateTimestamp
         @Column(name = "created_at", nullable = false)
@@ -32,7 +32,7 @@ data class ProductEntity(
 
         @UpdateTimestamp
         @Column(name = "updated_at", nullable = false)
-        val updatedAt: ZonedDateTime?
+        var updatedAt: ZonedDateTime?
 
 ){
         constructor() : this("SKU001", "Product 1", "Description 1",BigDecimal("15.99"), ZonedDateTime.now(), ZonedDateTime.now()) {

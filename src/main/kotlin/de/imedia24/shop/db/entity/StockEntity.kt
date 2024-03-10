@@ -1,5 +1,7 @@
 package de.imedia24.shop.db.entity
 
+import de.imedia24.shop.domain.product.ProductRequest
+import de.imedia24.shop.domain.product.StockResponse
 import javax.persistence.*
 
 
@@ -22,6 +24,5 @@ data class StockEntity(
     constructor() : this(0, 100, "Warehouse 1 ", ProductEntity()) {
 
     }
-
 
 }

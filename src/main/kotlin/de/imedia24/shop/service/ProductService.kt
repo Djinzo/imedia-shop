@@ -5,6 +5,7 @@ import de.imedia24.shop.db.entity.StockEntity
 import de.imedia24.shop.db.repository.ProductRepository
 import de.imedia24.shop.db.repository.StockRepository
 import de.imedia24.shop.domain.product.ProductRequest
+import de.imedia24.shop.domain.product.ProductRequest.Companion.toProductEntity
 import de.imedia24.shop.domain.product.ProductResponse
 import de.imedia24.shop.domain.product.ProductResponse.Companion.toProductResponse
 import de.imedia24.shop.domain.product.ProductUpdateRequest
@@ -14,54 +15,38 @@ import org.springframework.stereotype.Service
 class ProductService(private val productRepository: ProductRepository, private val stockRepository: StockRepository) {
 
     fun findProductBySku(sku: String): ProductResponse? {
-        val productEntity = productRepository.findBySku(sku);
+        val productEntity = productRepository.findBySku(sku)
+                .orElseThrow{IllegalStateException("product not found")}
         return productEntity?.toProductResponse();
     }
 
-    fun findProductsBySkus(skus: Array<String>): List<ProductResponse>? {
-        val productEntitys = productRepository.findBySkuIn(skus);
-        return productEntitys?.map { p -> p.toProductResponse() }
+    fun findProductsBySkus(skus: List<String>): List<ProductResponse>? {
+        val productEntities = productRepository.findBySkuIn(skus);
+        return productEntities?.map { p -> p.toProductResponse() }
     }
 
     fun addProduct(productRequest: ProductRequest): ProductResponse? {
         val existingProduct = productRepository.findBySku(productRequest.sku)
-        if (existingProduct != null) {
-            return null
+        if (existingProduct.isPresent) {
+            throw IllegalArgumentException("sku already exist")
         }
-        val product = ProductEntity(
-                productRequest.sku,
-                productRequest.name,
-                productRequest.description,
-                productRequest.price,
-                null, null
-        )
 
-        productRepository.save(product)
+        val product =productRequest.toProductEntity()
+        product.stockList = productRequest.stock.map { s -> StockEntity(s.id,s.quantity,s.warehouse,product) }
 
-        val stock = productRequest.stock.map { s -> StockEntity(s.id, s.quantity, s.warehouse, product) }
-
-        stockRepository.saveAll(stock)
-
-        product.stockList = stock
-
-        return product.toProductResponse()
+        return productRepository.save(product).toProductResponse()
     }
 
     fun updateProduct(sku: String, productRequest: ProductUpdateRequest): ProductResponse? {
-        val existingProduct = productRepository.findBySku(sku)
+        val product = productRepository.findBySku(sku)
+                .orElseThrow{IllegalStateException("product not found")}
 
-        if (existingProduct != null) {
-            val updatedProduct = existingProduct.copy(
-                    name = productRequest.name,
-                    description = productRequest.description,
-                    price = productRequest.price
-            )
+        productRequest.name?.let { product.name = it }
+        productRequest.description?.let { product.description = it }
+        productRequest.price?.let { product.price = it }
 
-            val savedProduct = productRepository.save(updatedProduct)
-            return savedProduct.toProductResponse()
-        }
+        return productRepository.save(product).toProductResponse();
 
-        return null
     }
 
 }

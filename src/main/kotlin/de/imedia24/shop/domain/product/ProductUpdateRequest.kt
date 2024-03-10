@@ -5,7 +5,7 @@ import de.imedia24.shop.domain.product.StockResponse.Companion.toStockResponse
 import java.math.BigDecimal
 
 data class ProductUpdateRequest(
-        val name: String,
-        val description: String,
-        val price: BigDecimal,
+        val name: String?,
+        val description: String?,
+        val price: BigDecimal?,
 )

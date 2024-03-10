@@ -10,8 +10,14 @@ data class ProductRequest(
         val description: String,
         val price: BigDecimal,
         val stock: List<StockResponse>,
-){
+) {
     companion object {
-
+        fun ProductRequest.toProductEntity() = ProductEntity(
+                sku,
+                name,
+                description,
+                price,
+                null
+                ,null);
     }
 }

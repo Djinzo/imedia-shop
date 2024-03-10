@@ -41,7 +41,7 @@ class ProductController(private val productService: ProductService) {
 
     @ApiOperation("get list of product by skus")
     @GetMapping("/products", produces = ["application/json;charset=utf-8"])
-    fun findProductsBySku(@PathParam("skus") skus: Array<String>): ResponseEntity<List<ProductResponse>> {
+    fun findProductsBySku(@PathParam("skus") skus: List<String>): ResponseEntity<List<ProductResponse>> {
         val products = productService.findProductsBySkus(skus);
         return if (products.isNullOrEmpty()) {
             ResponseEntity.notFound().build()

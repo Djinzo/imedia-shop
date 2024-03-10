@@ -48,7 +48,7 @@ class ShopApplicationTests(
 
     @Test
     fun find_products_by_skus() {
-        val skus = arrayOf("SKU001", "SKU002", "SKU003")
+        val skus = listOf("SKU001", "SKU002", "SKU003")
         `when`(productService.findProductsBySkus(skus)).thenReturn(products)
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/products?skus={skus}", skus)
@@ -65,7 +65,7 @@ class ShopApplicationTests(
     }
     @Test
     fun find_products_by_skus_notExist() {
-        val skus = arrayOf("SKU004", "SKU005", "SKU007")
+        val skus = listOf("SKU004", "SKU005", "SKU007")
         `when`(productService.findProductsBySkus(skus)).thenReturn(emptyList())
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/products?skus={skus}", skus)
@@ -76,8 +76,14 @@ class ShopApplicationTests(
     fun update_product_by_sku() {
         val sku = "SKU001";
         val productUpdateRequest = ProductUpdateRequest("updated name","updated descreption", BigDecimal.TEN);
-        val productResponse = ProductResponse(sku,productUpdateRequest.name,productUpdateRequest.description,productUpdateRequest.price, emptyList())
+        val productResponse = ProductResponse(sku,
+                productUpdateRequest.name?:"",
+                productUpdateRequest.description?:"",
+                productUpdateRequest.price?:BigDecimal.ZERO,
+                emptyList())
+
         `when`(productService.updateProduct(sku,productUpdateRequest)).thenReturn(productResponse)
+
         mockMvc.perform(
                 MockMvcRequestBuilders.patch("/product/{sku}", sku)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -87,6 +93,11 @@ class ShopApplicationTests(
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(productResponse.name))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(productResponse.description))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(productResponse.price))
+    }
+
+    @Test
+    fun add_product(){
+
     }
 
 
