@@ -16,7 +16,7 @@ class ProductService(private val productRepository: ProductRepository, private v
 
     fun findProductBySku(sku: String): ProductResponse? {
         val productEntity = productRepository.findBySku(sku)
-                .orElseThrow{IllegalStateException("product not found")}
+                .orElse(null)
         return productEntity?.toProductResponse();
     }
 
@@ -38,12 +38,12 @@ class ProductService(private val productRepository: ProductRepository, private v
     }
 
     fun updateProduct(sku: String, productRequest: ProductUpdateRequest): ProductResponse? {
-        val product = productRepository.findBySku(sku)
+        var product = productRepository.findBySku(sku)
                 .orElseThrow{IllegalStateException("product not found")}
 
-        productRequest.name?.let { product.name = it }
-        productRequest.description?.let { product.description = it }
-        productRequest.price?.let { product.price = it }
+        product = product.copy(name = productRequest.name?:product.name,
+                description = productRequest.description?:product.description,
+                price = productRequest.price?:product.price)
 
         return productRepository.save(product).toProductResponse();
 

@@ -13,11 +13,11 @@ data class ProductRequest(
 ) {
     companion object {
         fun ProductRequest.toProductEntity() = ProductEntity(
-                sku,
-                name,
-                description,
-                price,
-                null
-                ,null);
+                sku=sku,name=name,
+                description=description,
+                price=price,
+                createdAt = null,
+                updatedAt =null,
+                )
     }
 }

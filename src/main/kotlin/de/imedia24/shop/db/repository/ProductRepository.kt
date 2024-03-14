@@ -14,7 +14,4 @@ interface ProductRepository : CrudRepository<ProductEntity, String> {
     fun findBySkuIn(sku: List<String>) : List<ProductEntity>?
 
 
-    fun existsBySku(sku:String):Boolean;
-
-
 }

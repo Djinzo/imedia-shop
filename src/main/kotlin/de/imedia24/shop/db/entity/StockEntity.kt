@@ -20,9 +20,4 @@ data class StockEntity(
         @JoinColumn(name = "sku", referencedColumnName = "sku")
         val product: ProductEntity
 
-) {
-    constructor() : this(0, 100, "Warehouse 1 ", ProductEntity()) {
-
-    }
-
-}
+)

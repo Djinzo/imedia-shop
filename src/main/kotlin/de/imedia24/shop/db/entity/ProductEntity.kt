@@ -18,26 +18,23 @@ data class ProductEntity(
         val sku: String,
 
         @Column(name = "name", nullable = false)
-        var name: String,
+        val name: String,
 
         @Column(name = "description")
-        var description: String? = null,
+        val description: String? = null,
 
         @Column(name = "price", nullable = false)
-        var price: BigDecimal,
+        val price: BigDecimal=BigDecimal.ZERO,
 
         @UpdateTimestamp
         @Column(name = "created_at", nullable = false)
-        val createdAt: ZonedDateTime?,
+        val createdAt: ZonedDateTime?=null,
 
         @UpdateTimestamp
         @Column(name = "updated_at", nullable = false)
-        var updatedAt: ZonedDateTime?
+        val updatedAt: ZonedDateTime?=null
 
 ){
-        constructor() : this("SKU001", "Product 1", "Description 1",BigDecimal("15.99"), ZonedDateTime.now(), ZonedDateTime.now()) {
-
-        }
 
         @OneToMany(mappedBy = "product")
         var stockList: List<StockEntity> = ArrayList()
